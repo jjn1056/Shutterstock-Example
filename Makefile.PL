@@ -9,6 +9,7 @@ all_from 'lib/Shutterstock/Example.pm';
 my @core_requires = (
 	'Moose' => '1.08',
 	'Plack' => '0.9938',
+    'Plack::Middleware::Debug' => '0.09',
     'Starman' => '0.2004',
 );
 
