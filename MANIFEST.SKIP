@@ -37,7 +37,7 @@
 \.kpf$
 
 # local::lib
-\bextlib$
+\bextlib\b
 
 # Don't ship the last dist we built :)
 \.tar\.gz$
