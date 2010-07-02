@@ -12,6 +12,7 @@ my $app = sub {
 };
 
 builder {
+    enable 'StackTrace';
     enable 'Debug', panels => [ qw(DBITrace Environment PerlConfig Memory Timer Parameters Response ) ];
     $app;
 };

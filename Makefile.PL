@@ -17,4 +17,5 @@ requires @core_requires;
 build_requires 'Test::More' => '0.94';
 
 auto_install;
+bundle_local_lib;
 WriteAll;
