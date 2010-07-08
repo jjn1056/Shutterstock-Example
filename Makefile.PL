@@ -11,6 +11,7 @@ my @core_requires = (
 	'Plack' => '0.9938',
     'Plack::Middleware::Debug' => '0.09',
     'Starman' => '0.2004',
+    'Web::Simple' => '0.003',
 );
 
 requires @core_requires;
