@@ -16,5 +16,6 @@ my @core_requires = (
 requires @core_requires;
 build_requires 'Test::More' => '0.94';
 
+install_script glob('script/*.psgi');
 auto_install;
 WriteAll;
