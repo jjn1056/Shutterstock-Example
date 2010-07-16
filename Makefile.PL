@@ -17,6 +17,8 @@ my @core_requires = (
 requires @core_requires;
 build_requires 'Test::More' => '0.94';
 
+## auto_set_repository() if -d '.git';
+
 install_script glob('script/*.psgi');
 auto_install;
 WriteAll;
