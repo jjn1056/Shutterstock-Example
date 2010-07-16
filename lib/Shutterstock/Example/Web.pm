@@ -1,6 +1,7 @@
 use Web::Simple 'Shutterstock::Example::Web';
 
 package Shutterstock::Example::Web;
+
 use Shutterstock::Example;
 use HTML::Tags;
 use Plack::Request;

@@ -9,14 +9,11 @@ all_from 'lib/Shutterstock/Example.pm';
 my @core_requires = (
     'Plack' => '0.9938',
     'Plack::Middleware::Debug' => '0.09',
-    'Starman' => '0.2004',
     'Web::Simple' => '0.003',
 );
 
 requires @core_requires;
 build_requires 'Test::More' => '0.94';
-
-## auto_set_repository() if -d '.git';
 
 install_script glob('script/*.psgi');
 auto_install;
