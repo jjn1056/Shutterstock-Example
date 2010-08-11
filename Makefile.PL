@@ -7,9 +7,10 @@ use inc::Module::Install;
 all_from 'lib/Shutterstock/Example.pm';
 
 my @core_requires = (
-    'Plack' => '0.9938',
+    'Plack' => '0.9944',
     'Plack::Middleware::Debug' => '0.09',
     'Web::Simple' => '0.003',
+    'App::local::lib::helper' => '0.01',
 );
 
 requires @core_requires;
