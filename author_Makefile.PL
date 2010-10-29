@@ -3,7 +3,7 @@
 ## code, create tarballs, run extended author tests, etc.  It also has some  ##
 ## features for helping to manage dependencies, although if you are using a  ##
 ## modern cpan or cpanminus, they are less valuable.  If you just want to    ##
-## install code for use you don't need to worry about this stuff. If you are ##
+## install code for use you don't need to worry about this code.  If you are ##
 ## a developer you will need to bootstrap your Perl setup with a SDK such as ##
 ## L<Task::BeLike::JJNAPIORK>                                                ##
 ##                                                                           ##
