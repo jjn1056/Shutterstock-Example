@@ -4,18 +4,12 @@ use strict;
 use warnings;
 use inc::Module::Install;
 
+requires 'Plack' => '0.9951';
+requires 'Plack::Middleware::Debug' => '0.10',
+requires 'Web::Simple' => '0.004',
+test_requires 'Test::More' => '0.94';
+
 all_from 'lib/Shutterstock/Example.pm';
-
-my @core_requires = (
-    'Plack' => '0.9944',
-    'Plack::Middleware::Debug' => '0.09',
-    'Web::Simple' => '0.003',
-    'App::local::lib::helper' => '0.01',
-);
-
-requires @core_requires;
-build_requires 'Test::More' => '0.94';
-
 install_script glob('script/*.psgi');
 auto_install;
 WriteAll;

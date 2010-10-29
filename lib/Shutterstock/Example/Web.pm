@@ -11,18 +11,26 @@ dispatch {
     sub (GET) {
         my $res = Plack::Response->new(200);
         $res->content_type('text/html');
-        $res->content(
-            HTML::Tags::to_html_string(
-                <html>,
-                    <title>,"Hello World!",</title>,
-                    <body>,
-                        <p>, "Hello World, I'm version: $Shutterstock::Example::VERSION", </p>,
-                    </body>,
-                </html>,
-            ),
-        ); 
+        $res->content(&homepage);
         $res->finalize;
     },
 };
+
+sub doctype {
+    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ',
+    '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+}
+
+sub homepage {
+    HTML::Tags::to_html_string(
+        &doctype,
+        <html>,
+            <title>,"Hello World!",</title>,
+            <body>,
+                <p>, "Hi, I'm version: $Shutterstock::Example::VERSION", </p>,
+            </body>,
+        </html>,
+    );
+}
 
 1;
