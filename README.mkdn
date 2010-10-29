@@ -1,0 +1,85 @@
+# NAME
+
+Shutterstock::Example - An Example application for Internal Shutterstock IT
+
+# DESCRIPTION
+
+Technology sample for [Plack](http://search.cpan.org/perldoc?Plack), [Web::Simple](http://search.cpan.org/perldoc?Web::Simple), [Module::Install](http://search.cpan.org/perldoc?Module::Install) and
+[local::lib](http://search.cpan.org/perldoc?local::lib).
+
+Intended as experimental area for possible new technlogies such as [Plack](http://search.cpan.org/perldoc?Plack) and
+techniques for deployment, CPAN dependency management and coder sandboxing.
+
+# INSTALLATION
+
+Following is suggested method for installing sample code depending on context,
+either as a developer or as an administrator.
+
+## Developer
+
+Developers are primarily interested in ability to checkout code, make and share
+code changes, run tests, try out new dependencies and resolve merge conflicts
+with other developers.  Suggested method is for a developer to install a user
+level Perl with [App::perlbrew](http://search.cpan.org/perldoc?App::perlbrew), bootstrap a developer kit (for now the easy
+way to do this is via [Task::BeLike::JJNAPIORK](http://search.cpan.org/perldoc?Task::BeLike::JJNAPIORK)), clone the git repository and
+then install dependencies.  Checklist follows:
+
+- install [App::perlbrew](http://search.cpan.org/perldoc?App::perlbrew)
+
+Just follow the basic instructions to setup a user level Perl executable from
+the [App::perlbrew](http://search.cpan.org/perldoc?App::perlbrew) documentation.
+
+- bootstrap SDK and [local::lib](http://search.cpan.org/perldoc?local::lib)
+
+The first command bootstraps the SDK for Modern Perl development, the second
+enables your [local::lib](http://search.cpan.org/perldoc?local::lib) in `$HOME/extlib` so that you can use it.
+
+    * curl -L http://cpanmin.us/ | perl - -l $HOME/extlib Task::BeLike::JJNAPIORK
+    * $HOME/extlib/bin/localenv bash
+
+See the documentation for [App::local::lib::helper](http://search.cpan.org/perldoc?App::local::lib::helper) on the `localenv` and the
+`localenv-bashrc` scripts.
+
+- clone git repository
+
+Fork http://github.com/jjn1056/Shutterstock-Example and clone it.
+
+- install dependencies
+
+    cpanm --installdeps .
+
+- start the server
+
+    plackup -Ilib ./script/shutterstock-example-web.psgi
+
+## Administrator
+
+Given a tarball, install it and all dependencies with [App::cpanminus](http://search.cpan.org/perldoc?App::cpanminus), sync
+to all target servers and HUP application servers.  Checklist follows:
+
+- create tarball
+
+    * perl Makefile.PL
+    * make test
+    * make dist
+
+- create new installation from tarball
+
+    * cpanm -l $HOME/local-v0.08 Shutterstock-Example-0.08.tar.gz 
+
+- sync across target servers
+
+    TBD
+
+- HUP applications servers
+
+    TBD
+
+# AUTHOR
+
+Shutterstock Coders `<coders@shutterstock.com>`
+
+# LICENSE & COPYRIGHT
+
+Copyright 2010, Shutterstock, LLC
+proprietary code not for distribution

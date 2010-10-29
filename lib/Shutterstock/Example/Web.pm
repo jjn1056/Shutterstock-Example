@@ -1,11 +1,9 @@
 use Web::Simple 'Shutterstock::Example::Web';
 
 package Shutterstock::Example::Web;
-
-use Shutterstock::Example;
-use HTML::Tags;
-use Plack::Request;
 use Plack::Response;
+use HTML::Tags;
+use Shutterstock::Example;
 
 dispatch {
     sub (/) {
