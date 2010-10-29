@@ -18,7 +18,6 @@ use Module::Install::AutoLicense;
 use Module::Install::Repository;
 use Module::Install::Homepage;
 use Module::Install::AutoManifest;
-use Module::Install::Bundle::LocalLib;
 
 requires 'App::local::lib::helper';
 readme_markdown_from_pod;
@@ -28,6 +27,5 @@ auto_set_repository;
 auto_set_homepage;
 auto_manifest;
 auto_install;
-bundle_local_lib;
 
 1;
