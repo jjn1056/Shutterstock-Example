@@ -25,6 +25,7 @@ auto_license;
 auto_set_repository;
 auto_set_homepage;
 auto_manifest;
+## auto_bundle_deps 
 auto_install;
 
 1;
