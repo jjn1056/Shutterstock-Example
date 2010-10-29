@@ -13,3 +13,5 @@ install_script glob('script/*.psgi');
 
 require 'author_Makefile.PL'
   if $Module::Install::AUTHOR;
+
+WriteAll;

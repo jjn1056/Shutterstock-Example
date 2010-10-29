@@ -1,8 +1,4 @@
-#!/usr/bin/env perl
-
-use strict;
-use warnings;
-
+## --------------------------------------------------------------------------##
 ## This stuff is used by CPAN authors and developers who need to build this
 ## code, create tarballs, run extended author tests, etc.  It also has function
 ## for helping to manage dependencies.  If you are just installing code for use
@@ -12,6 +8,7 @@ use warnings;
 ## Module::Install automatically 'uses' the following plugins if they have
 ## already been installed.  We list them here for cataloging and to reduce
 ## obfuscation due to the autoloading magic.
+## --------------------------------------------------------------------------##
 
 use Module::Install::ReadmeMarkdownFromPod;
 use Module::Install::ManifestSkip;
@@ -26,7 +23,6 @@ auto_license;
 auto_set_repository;
 auto_set_homepage;
 auto_manifest;
-
 auto_install;
-WriteAll;
 
+1;
