@@ -59,13 +59,13 @@ to all target servers and HUP application servers.  Checklist follows:
 
 - create tarball
 
-    * perl Makefile.PL
-    * make test
-    * make dist
+    perl Makefile.PL
+    make test
+    make dist
 
 - create new installation from tarball
 
-    * cpanm -l $HOME/local-v0.08 Shutterstock-Example-0.08.tar.gz 
+    cpanm -l $HOME/local-v0.08 Shutterstock-Example-0.08.tar.gz 
 
 - sync across target servers
 
@@ -77,9 +77,9 @@ to all target servers and HUP application servers.  Checklist follows:
 
 # AUTHOR
 
-Shutterstock Coders `<coders@shutterstock.com>`
+John Napiorkowski, `<jjnapiork@cpan.org>`
 
-# LICENSE & COPYRIGHT
+# COPYRIGHT & LICENSE
 
-Copyright 2010, Shutterstock, LLC
-proprietary code not for distribution
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
