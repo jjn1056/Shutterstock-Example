@@ -12,6 +12,7 @@ requires 'DBIx::Class' => '0.08124';
 requires 'DBIx::Class::Helpers' => '2.005000';
 requires 'DBIx::Class::DynamicDefault' => '0.03';
 requires 'DBIx::Class::TimeStamp' => '0.14';
+requires 'Test::DBIx::Class' => '0.15';
 test_requires 'Test::Most' => '0.23';
 install_script glob('script/*.psgi');
 require 'script/author_Makefile.PL'

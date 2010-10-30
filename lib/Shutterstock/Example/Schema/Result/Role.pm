@@ -19,7 +19,7 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key('role_id');
 __PACKAGE__->add_unique_constraints(['title'], ['description']);
-__PACKAGE__->has_many(role_users_rs => 'Shutterstock::Example::Schema::Result::UserRole');
+__PACKAGE__->has_many(role_users_rs => 'Shutterstock::Example::Schema::Result::UserRole', 'role_id');
 
 1;
 

@@ -1,28 +1,11 @@
-use MooseX::Declare;
-use Freestock::Schema::Result::Registration;
-class Freestock::Schema::ResultSet::User
-	extends Freestock::Schema::ResultSet {
-    method is_unregistered_email(Str $email) {
-        $self->find({email=>$email}) ? 0:1;
-    }
-    method create_user_from_registration(Freestock::Schema::Result::Registration $registration) {
-        my $new_user = $self->new_result({
-            email => $registration->email,
-            status => 'active',
-            registration => $registration,
-        });
-        $new_user->store_column(password=>$registration->password);
-        return $new_user->insert;
+package Shutterstock::Example::Schema::ResultSet::User;
+use parent 'Shutterstock::Example::Schema::ResultSet';
 
-    }
-	__PACKAGE__->meta->make_immutable(inline_constructor => 0);
-} 1
-
-__END__ 
+1;
 
 =head1 NAME
 
-Freestock::Schema::ResultSet::User - Set Methods on Users 
+Shutterstock::Example::Schema::ResultSet::User - Set Methods on Users 
 
 =head1 DESCRIPTION
 
@@ -34,11 +17,12 @@ This package defines the following methods.
 
 =head1 AUTHOR
 
-See L<Freestock> for more information regarding authors.
+John Napiorkowski, C<< <jjnapiork@cpan.org> >>
 
 =head1 COPYRIGHT & LICENSE
 
-See L<Freestock> for the copyright & license information.
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
 

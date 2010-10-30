@@ -19,7 +19,7 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key('user_id');
 __PACKAGE__->add_unique_constraint(['email']);
-__PACKAGE__->has_many(user_roles_rs => 'Shutterstock::Example::Schema::Result::UserRole');
+__PACKAGE__->has_many(user_roles_rs => 'Shutterstock::Example::Schema::Result::UserRole', 'user_id');
 
 1;
 
