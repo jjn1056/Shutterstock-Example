@@ -10,7 +10,7 @@ requires 'Plack::Middleware::Debug' => '0.10',
 requires 'Web::Simple' => '0.004',
 test_requires 'Test::Most' => '0.23';
 install_script glob('script/*.psgi');
-require 'author_Makefile.PL'
+require 'script/author_Makefile.PL'
   if $Module::Install::AUTHOR;
 
 WriteAll;
