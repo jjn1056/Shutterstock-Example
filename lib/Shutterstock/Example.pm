@@ -5,7 +5,7 @@ our $VERSION = '0.09';
  
 =head1 NAME
 
-Shutterstock::Example - An Example application for Internal Shutterstock IT
+Shutterstock::Example - An Example application using Modern Perl
 
 =head1 DESCRIPTION
 
@@ -29,14 +29,12 @@ level Perl with L<App::perlbrew>, bootstrap a developer kit (for now the easy
 way to do this is via L<Task::BeLike::JJNAPIORK>), clone the git repository and
 then install dependencies.  Checklist follows:
 
-=over 4
-
-=item install L<App::perlbrew>
+=head3 install L<App::perlbrew>
 
 Just follow the basic instructions to setup a user level Perl executable from
 the L<App::perlbrew> documentation.
 
-=item bootstrap SDK and L<local::lib>
+=head3 bootstrap SDK and L<local::lib>
 
 The first command bootstraps the SDK for Modern Perl development, the second
 enables your L<local::lib> in C<$HOME/extlib> so that you can use it.
@@ -47,46 +45,49 @@ enables your L<local::lib> in C<$HOME/extlib> so that you can use it.
 See the documentation for L<App::local::lib::helper> on the C<localenv> and the
 C<localenv-bashrc> scripts.
 
-=item clone git repository
+=head3 clone git repository
 
-Fork http://github.com/jjn1056/Shutterstock-Example and clone it.
+Fork http://github.com/jjn1056/Shutterstock-Example and clone it.  Something
+similar to:
 
-=item install dependencies
+    git clone git@github.com:jjn1056/Shutterstock-Example.git
+
+=head3 install dependencies
+
+L<App::cpanminus> was installed when you bootstrapped the SDK, and is the
+preferred tool to installing CPAN modules.
 
     cpanm --installdeps .
 
-=item start the server
+=head3 start the server
+
+C<plackup> comes with L<Plack> and is used to start the PSGI application 
+inside a PSGI handler.
 
     plackup -Ilib ./script/shutterstock-example-web.psgi
-
-=back
 
 =head2 Administrator
 
 Given a tarball, install it and all dependencies with L<App::cpanminus>, sync
 to all target servers and HUP application servers.  Checklist follows:
 
-=over 4
-
-=item create tarball
+=head3 create tarball
 
     perl Makefile.PL
     make test
     make dist
 
-=item create new installation from tarball
+=head3 create new installation from tarball
 
-    cpanm -l $HOME/local-v0.08 Shutterstock-Example-0.08.tar.gz 
+    cpanm -l $HOME/local-v0.XXX Shutterstock-Example-0.XXX.tar.gz 
 
-=item sync across target servers
-
-    TBD
-
-=item HUP applications servers
+=head3 sync across target servers
 
     TBD
 
-=back 
+=head3 HUP applications servers
+
+    TBD
 
 =head1 AUTHOR
 
