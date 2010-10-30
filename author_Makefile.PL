@@ -28,4 +28,3 @@ auto_set_homepage;
 auto_manifest;
 auto_install;
 
-1;

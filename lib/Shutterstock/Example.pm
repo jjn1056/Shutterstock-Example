@@ -29,7 +29,7 @@ level Perl with L<App::perlbrew>, bootstrap a developer kit (for now the easy
 way to do this is via L<Task::BeLike::JJNAPIORK>), clone the git repository and
 then install dependencies.  Checklist follows:
 
-=over4
+=over 4
 
 =item install L<App::perlbrew>
 
@@ -41,8 +41,8 @@ the L<App::perlbrew> documentation.
 The first command bootstraps the SDK for Modern Perl development, the second
 enables your L<local::lib> in C<$HOME/extlib> so that you can use it.
 
-    * curl -L http://cpanmin.us/ | perl - -l $HOME/extlib Task::BeLike::JJNAPIORK
-    * $HOME/extlib/bin/localenv bash
+    curl -L http://cpanmin.us/ | perl - -l $HOME/extlib Task::BeLike::JJNAPIORK
+    $HOME/extlib/bin/localenv bash
 
 See the documentation for L<App::local::lib::helper> on the C<localenv> and the
 C<localenv-bashrc> scripts.
@@ -66,6 +66,8 @@ Fork http://github.com/jjn1056/Shutterstock-Example and clone it.
 Given a tarball, install it and all dependencies with L<App::cpanminus>, sync
 to all target servers and HUP application servers.  Checklist follows:
 
+=over 4
+
 =item create tarball
 
     * perl Makefile.PL
@@ -83,6 +85,8 @@ to all target servers and HUP application servers.  Checklist follows:
 =item HUP applications servers
 
     TBD
+
+=back 
 
 =head1 AUTHOR
 

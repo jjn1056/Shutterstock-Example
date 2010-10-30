@@ -34,8 +34,8 @@ the [App::perlbrew](http://search.cpan.org/perldoc?App::perlbrew) documentation.
 The first command bootstraps the SDK for Modern Perl development, the second
 enables your [local::lib](http://search.cpan.org/perldoc?local::lib) in `$HOME/extlib` so that you can use it.
 
-    * curl -L http://cpanmin.us/ | perl - -l $HOME/extlib Task::BeLike::JJNAPIORK
-    * $HOME/extlib/bin/localenv bash
+    curl -L http://cpanmin.us/ | perl - -l $HOME/extlib Task::BeLike::JJNAPIORK
+    $HOME/extlib/bin/localenv bash
 
 See the documentation for [App::local::lib::helper](http://search.cpan.org/perldoc?App::local::lib::helper) on the `localenv` and the
 `localenv-bashrc` scripts.
