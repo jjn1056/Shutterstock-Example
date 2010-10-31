@@ -7,7 +7,26 @@ use HTML::Tags;
 use Shutterstock::Example;
 use Test::DBIx::Class
   -schema_class => 'Shutterstock::Example::Schema',
+##  -traits=>'Testmysqld',
   qw(:resultsets);
+
+Role->create({title=>'member', description=>'normal member'});
+Role->create({title=>'admin', description=>'super privs'});
+
+sub user_form {
+    my ($self, $item) = @_;
+    $item ||= User->new_result({});
+    HTML::FormHandler::Model::DBIC
+    ->with_traits('HTML::FormHandler::TraitFor::DBICFields')
+    ->new(
+        item => $item,
+        exclude => ['created'],
+        field_list => [
+            'roles' => { type => 'Multiple', label_column => 'title', order => 90},
+            'submit' => { type => 'Submit', order => 99 },
+        ],
+    );
+}
 
 dispatch {
     my $res = Plack::Response->new(200);
@@ -18,33 +37,22 @@ dispatch {
         $res->finalize;
     },
     subdispatch sub (/user) {
-        my $form = HTML::FormHandler::Model::DBIC
-            ->with_traits('HTML::FormHandler::TraitFor::DBICFields')
-            ->new(
-                item => User->new_result({}),
-                exclude => ['created'],
-                field_list => [ 'submit' => { 
-                    type => 'Submit', order => 99,
-                } ],
-            );
+        my $form = $self->user_form;
         [
             sub (GET) {
                 my $body = $form->render;
                 $res->content($self->wrapper(\$body));
                 $res->finalize;
             },
-            sub (POST + %:email=) {
+            sub (POST + %:email=&*) {
                 my ($self, $env1, $env2, $params) = @_;
-
                 $form->process(params => $params);
                 if($form->validated) {
-                    $res->content_type('text/html');
                     $res->content($self->wrapper("You got a new user!"));
                     $res->finalize;
 
                 } else {
                     my $body = $form->render;
-                    $res->content_type('text/html');
                     $res->content($self->wrapper(\$body));
                     $res->finalize;
                 }
@@ -77,6 +85,9 @@ sub landing {
     )
 }
 
+sub users {
+#    my ($elf,
+}
 1;
 
    
