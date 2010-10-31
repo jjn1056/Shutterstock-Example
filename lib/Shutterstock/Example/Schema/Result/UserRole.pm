@@ -4,10 +4,8 @@ use parent 'Shutterstock::Example::Schema::Result';
  __PACKAGE__->join_table({
     left_class   => 'User',
     left_method  => 'user',
-    left_method_plural => 'users',
     right_class  => 'Role',
     right_method => 'role',
-    left_method_plural => 'roles',
 });
 
 1;
