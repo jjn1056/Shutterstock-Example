@@ -47,6 +47,12 @@ fixtures_ok sub {
 
 }, 'Installed Fixtures';
 
+is_fields [qw/title description/], Role, [
+    ['admin', 'super privs'],
+    ['member', 'normal member'],
+    ['partner', 'an external partner'],
+], 'got expected roles';
+
 ok my $john = User->find({email=>'johnn@shutterstock.com'}),
   'found John';
 
@@ -84,7 +90,18 @@ throws_ok sub {
 }, qr/column email is not unique/, "Can't insert non unique column into user";
 
 throws_ok sub {
+    $john->create_related('user_roles_rs', {role=>$admin});
+}, qr/columns user_id, role_id are not unique/, "Can't insert non unique column user_role";
+
+throws_ok sub {
     $john->add_to_roles($admin);
+}, qr/columns user_id, role_id are not unique/, "Can't insert non unique column user_role";
+
+throws_ok sub {
+    UserRole->create({
+        user => $john,
+        role => $admin,
+    });
 }, qr/columns user_id, role_id are not unique/, "Can't insert non unique column user_role";
 
 done_testing; 
