@@ -16,6 +16,10 @@ requires 'DBIx::Class::TimeStamp' => '0.14';
 test_requires 'Test::DBIx::Class' => '0.16';
 test_requires 'Test::Most' => '0.23';
 
+requires 'DateTime';
+requires 'HTML::FormHandler';
+requires 'HTML::FormHandler::Model::DBIC';
+
 install_script glob('script/*.psgi');
 require 'script/author_Makefile.PL'
   if $Module::Install::AUTHOR;
