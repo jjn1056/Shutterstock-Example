@@ -1,93 +1,105 @@
-use Web::Simple 'Shutterstock::Example::Web';
-
 package Shutterstock::Example::Web;
-use Plack::Response;
-use HTML::FormHandler::Model::DBIC;
-use HTML::Tags;
+
+use Web::Simple __PACKAGE__;
+use Shutterstock::Example::Web::User;
 use Shutterstock::Example;
+use HTML::Tags;
 use Test::DBIx::Class
   -schema_class => 'Shutterstock::Example::Schema',
-##  -traits=>'Testmysqld',
+  -traits=>'Testmysqld',
   qw(:resultsets);
 
 Role->create({title=>'member', description=>'normal member'});
 Role->create({title=>'admin', description=>'super privs'});
 
-sub user_form {
-    my ($self, $item) = @_;
-    $item ||= User->new_result({});
-    HTML::FormHandler::Model::DBIC
-    ->with_traits('HTML::FormHandler::TraitFor::DBICFields')
-    ->new(
-        item => $item,
-        exclude => ['created'],
-        field_list => [
-            'roles' => { type => 'Multiple', label_column => 'title', order => 90},
-            'submit' => { type => 'Submit', order => 99 },
-        ],
-    );
-}
-
 dispatch {
-    my $res = Plack::Response->new(200);
-    $res->content_type('text/html');
-
     sub (/) {
-        $res->content($self->landing);
-        $res->finalize;
+        $self->show_landing;
     },
     subdispatch sub (/user) {
-        my $form = $self->user_form;
+        my $form = 'Shutterstock::Example::Web::User'->new(schema=>Schema);
         [
             sub (GET) {
-                my $body = $form->render;
-                $res->content($self->wrapper(\$body));
-                $res->finalize;
+                $self->show_new_user_form($form);
             },
             sub (POST + %:email=&*) {
                 my ($self, $env1, $env2, $params) = @_;
-                $form->process(params => $params);
-                if($form->validated) {
-                    $res->content($self->wrapper("You got a new user!"));
-                    $res->finalize;
-
-                } else {
-                    my $body = $form->render;
-                    $res->content($self->wrapper(\$body));
-                    $res->finalize;
-                }
+                $form->process(params => $params) ?
+                  $self->show_you_create_a_user :
+                  $self->show_new_user_form($form);
             }
         ],
     },
 };
 
-sub wrapper {
-    my ($self, @body) = @_;
-    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ',
-    '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-    HTML::Tags::to_html_string(
-        <html>,
-            <title>,"Hello World!",</title>,
-            <body>, @body,
-            </body>,
-        </html>,
-    );
-
+sub as_html {
+    my ($template, %data) = @_;
+    my @body = process_templates([$template, \&layout], %data);
+    return [
+        200,
+        ['Content-Type' => 'text/html' ],
+        \@body,
+    ];
 }
 
-sub landing {
-    $self->wrapper(
-        <p>, "Hi, I'm version: $Shutterstock::Example::VERSION", </p>,
+    sub process_templates {
+        my ($templates, %data) = @_;
+        for my $template(@$templates) {
+            my @processed = $template->(%data);
+            $data{content} = \@processed;
+        }
+        HTML::Tags::to_html_string(@{$data{content}});
+    }
+
+    sub layout {
+        my (%data) = @_;
+        \'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ',
+        \'"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+        <html>,
+          <title>, ($data{title} || 'Hello World'), </title>,
+            <body>, @{$data{content}},
+            </body>,
+        </html>;
+    }
+
+sub show_landing {
+    as_html(\&landing, (
+        title => "Welcome to the Demo Home",
+        site_version => $Shutterstock::Example::VERSION,
+    ));
+}
+
+    sub landing {
+        my (%data) = @_;
+        <p>, "Hi, I'm version: ", $data{site_version}, </p>,
         <p>, "Here's some interesting things about me", </p>,
         <ul>,
             <li>, <a href="/user">, "My Users", </li>,
-        </ul>,
-    )
+        </ul>;
+    }
+
+sub show_new_user_form {
+    my ($self, $form) = @_;
+    as_html(\&new_user_form, (
+        title => "Create a User",
+        form => $form,
+    ));
 }
 
-sub users {
-#    my ($elf,
+    sub new_user_form {
+        my (%data) = @_;
+        my $form = $data{form}->render;
+        return \$form;
+    }
+
+sub show_you_create_a_user {
+    as_html(\&you_created_a_user, title => "Congrats!");
 }
+
+    sub you_created_a_user {
+        <p>, "You made a user!", </p>;
+    }
+
 1;
 
    
