@@ -1,7 +1,7 @@
 package Shutterstock::Example;
  
 use 5.008008;
-our $VERSION = '0.10';
+our $VERSION = '0.11';
  
 =head1 NAME
 
