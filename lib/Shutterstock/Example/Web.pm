@@ -11,7 +11,7 @@ dispatch {
         $self->show_landing;
     },
     subdispatch sub (/user) {
-        my $form = 'Shutterstock::Example::Web::User'->new(schema=>Schema);
+        my $form = Shutterstock::Example::Web::User->new(schema=>Schema);
         [
             sub (GET) {
                 $self->show_new_user_form($form);

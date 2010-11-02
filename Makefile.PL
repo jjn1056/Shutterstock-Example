@@ -20,6 +20,7 @@ requires 'HTML::FormHandler::Model::DBIC' => '0.14';
 test_requires 'Test::DBIx::Class' => '0.16';
 test_requires 'Test::Most' => '0.23';
 
+auto_bundle_deps;
 install_script glob('script/*.psgi');
 require 'script/author_Makefile.PL'
   if $Module::Install::AUTHOR;

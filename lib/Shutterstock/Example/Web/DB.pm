@@ -8,16 +8,18 @@ use Test::DBIx::Class
   qw(:resultsets);
 
 sub import {
+    my ($class, $target) = @_;
+    $target ||= 'Schema';
     my $caller = caller;
-    &export_into($caller);
+    &export_into($caller, $target);
     &seed;
 }
 
 sub export_into {
-    my ($caller) = @_;
-    EVIL_MONKEY: {
+    my ($caller, $target) = @_;
+    INFUSE_CALLER: {
         no strict 'refs';
-        *{"${caller}::Schema"} = \&Schema;
+        *{"${caller}::${target}"} = \&Schema;
     }
 }
 
