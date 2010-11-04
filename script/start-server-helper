@@ -1,0 +1,55 @@
+#!/usr/bin/env perl
+
+use Config;
+use FindBin;
+
+use lib "$FindBin::Bin/../lib";
+
+if(
+    @ARGV ||
+    ($ENV{PERL_MM_OPT} and 
+    ($ENV{MODULEBUILDRC} or $ENV{PERL_MB_OPT}))
+) {
+
+    my $which_perl = $ENV{START_SERVER_WHICH_PERL} || $Config{perlpath};
+    my $helper_permissions = $ENV{START_SERVER_PERMISSIONS} || '0755';
+
+    my ($install_base, $target) =
+        map {split '=', $_} 
+        grep { m/^INSTALL_BASE/ }
+        split ' ', $ENV{PERL_MM_OPT};
+
+    my $lib = File::Spec->catdir($target, 'lib', 'perl5');
+    my $bin = File::Spec->catdir($target, 'bin');
+
+    $bin = File::Spec->catdir($bin, 'start-shutterstock-example');
+    open(my $bin_fh, '>', $bin)
+      or $self->error("Can't open $bin", $!);
+
+    print $bin_fh <<"END";
+#!$which_perl
+
+BEGIN {
+    use strict;
+    use warnings;
+    use Cwd 'cwd';
+    use File::Spec;
+
+    use lib File::Spec->catdir(cwd(), 'lib');
+    use lib '$lib';
+    use local::lib '$target';
+}
+
+use Plack::Runner;
+my \$runner = Plack::Runner->new();
+\$runner->parse_options(\@ARGV);
+
+use Shutterstock::Example::Web;
+\$runner->run(Shutterstock::Example::Web->as_psgi_app);
+
+END
+
+    close($bin_fh);
+    chmod oct($helper_permissions), $bin;
+}
+
