@@ -6,7 +6,6 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 
 if(
-    @ARGV ||
     ($ENV{PERL_MM_OPT} and 
     ($ENV{MODULEBUILDRC} or $ENV{PERL_MB_OPT}))
 ) {
@@ -25,12 +24,10 @@ if(
     open(my $bin_fh, '>', $bin)
       or $self->error("Can't open $bin", $!);
 
-    print $bin_fh <<"END";
+    print $bin_fh <<"SCRIPT_CONTENT";
 #!$which_perl
 
 BEGIN {
-    use strict;
-    use warnings;
     use Cwd 'cwd';
     use File::Spec;
 
@@ -39,16 +36,27 @@ BEGIN {
     use local::lib '$target';
 }
 
+use strict;
+use warnings;
 use Plack::Runner;
+use Shutterstock::Example::Web;
+
 my \$runner = Plack::Runner->new();
 \$runner->parse_options(\@ARGV);
-
-use Shutterstock::Example::Web;
 \$runner->run(Shutterstock::Example::Web->as_psgi_app);
 
-END
+SCRIPT_CONTENT
 
     close($bin_fh);
     chmod oct($helper_permissions), $bin;
+} else {
+    print <<"MESSAGE";
+
+    Notice: 'start-shutterstock-example' won't be installed since no local::lib
+    is active.  This means you are installing the distribution into the global
+    Perl lib and you don't need any help.  This is probably not the recommended
+    installation method, but I guess you know what you are doing.
+
+MESSAGE
 }
 
