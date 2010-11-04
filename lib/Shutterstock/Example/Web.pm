@@ -7,7 +7,7 @@ use Shutterstock::Example;
 use HTML::Tags;
 
 dispatch {
-        sub (/) {
+    sub (/) {
         $self->show_landing;
     },
     subdispatch sub (/user) {
