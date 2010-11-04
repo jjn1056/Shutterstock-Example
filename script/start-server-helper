@@ -20,9 +20,8 @@ if(
         split ' ', $ENV{PERL_MM_OPT};
 
     my $lib = File::Spec->catdir($target, 'lib', 'perl5');
-    my $bin = File::Spec->catdir($target, 'bin');
+    my $bin = File::Spec->catdir($target, 'bin', 'start-shutterstock-example');
 
-    $bin = File::Spec->catdir($bin, 'start-shutterstock-example');
     open(my $bin_fh, '>', $bin)
       or $self->error("Can't open $bin", $!);
 
