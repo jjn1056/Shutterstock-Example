@@ -7,11 +7,12 @@ use Shutterstock::Example;
 use HTML::Tags;
 
 dispatch {
-    sub (/) {
+        sub (/) {
         $self->show_landing;
     },
     subdispatch sub (/user) {
-        my $form = Shutterstock::Example::Web::User->new(schema=>Schema);
+        my($self, $env) = @_[0, +PSGI_ENV];
+        my $form = Shutterstock::Example::Web::User->new(schema=>WebSchema($env));
         [
             sub (GET) {
                 $self->show_new_user_form($form);
