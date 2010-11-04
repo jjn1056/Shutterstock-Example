@@ -1,7 +1,7 @@
 package Shutterstock::Example::Web;
 
 use Web::Simple __PACKAGE__;
-use Shutterstock::Example::Web::DB;
+use Shutterstock::Example::Web::DB qw(WebSchema);
 use Shutterstock::Example::Web::User;
 use Shutterstock::Example;
 use HTML::Tags;

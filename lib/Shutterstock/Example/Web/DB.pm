@@ -21,7 +21,7 @@ sub export_into {
     INFUSE_CALLER: {
         no strict 'refs';
         *{"${caller}::${target}"} = sub ($) {
-            my $querylog = (shift)->{'plack.middleware.debug.dbic.querylog'};
+            my $querylog = shift->{'plack.middleware.debug.dbic.querylog'};
             return &schema_with_querylog($querylog);
         };
     }
