@@ -4,8 +4,8 @@ use parent 'Shutterstock::Example::Schema::Result';
 __PACKAGE__->table('user');
 __PACKAGE__->add_columns(
     user_id => {
-        data_type => 'integer',
-        is_auto_increment => 1,
+        data_type => 'varchar',
+        size => '36',
     },
     email => {
         data_type => 'varchar',
@@ -26,7 +26,7 @@ __PACKAGE__->many_to_many('roles', 'user_roles_rs', 'role');
 
 =head1 NAME
 
-Freestock::Schema::Result::User - A user on the site
+Shutterstock::Example::Schema::Result::User - A user on the site
 
 =head1 SYNOPSIS
 

@@ -4,8 +4,8 @@ use parent 'Shutterstock::Example::Schema::Result';
 __PACKAGE__->table('role');
 __PACKAGE__->add_columns(
     role_id => {
-        data_type => 'integer',
-        is_auto_increment => 1,
+        data_type => 'varchar',
+        size => '36',
     },
     title => {
         data_type => 'varchar',
