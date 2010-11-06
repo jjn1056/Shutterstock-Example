@@ -127,7 +127,8 @@ sub show_user_form {
     ));
 }
 
-    ## TODO This error display stuff could probably be extracted
+    ## TODO This error display stuff could probably be extracted into
+    ## a common component.
 
     sub user_form {
         my (%data) = @_;
@@ -171,11 +172,18 @@ Shutterstock::Example::Web - A sample application
 
 =head1 DESCRIPTION
 
-A L<Web::Simple> based applicaiton
+A L<Web::Simple> based applicaiton.  Currently creates url mappings for the
+following:
+
+    GET http://localhost/
+    GET http://localhost/user
+    GET|POST http://localhost/*
 
 =head1 METHODS
 
 This package defines the following methods.
+
+    TBD
 
 =head1 AUTHOR
 

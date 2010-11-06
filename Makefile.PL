@@ -19,11 +19,20 @@ requires 'HTML::FormHandler' => '0.32005';
 requires 'HTML::FormHandler::Model::DBIC' => '0.14';
 requires 'UUID::Tiny' => '1.03';
 requires 'HTML::FillInForm::Lite' => '1.09';
+requires 'Test::mysqld' => '0.11'; ## Need for non-interactive install Test::DBIC
+requires 'Test::DBIx::Class' => '0.16'; ## Non test dep for now
 
-test_requires 'Test::DBIx::Class' => '0.16';
+if(
+    ($ENV{PERL_MM_OPT} and 
+    ($ENV{MODULEBUILDRC} or $ENV{PERL_MB_OPT}))
+) {
+
+    ## If there's an active local::lib, require extra deps
+    requires 'local::lib' => '1.006007';
+}
+
 test_requires 'Test::Most' => '0.23';
 test_requires 'HTTP::Request::Common';
-test_requires 'HTTP::Request::AsCGI';
 
 all_from 'lib/Shutterstock/Example.pm';
 install_script glob('script/*.psgi');
