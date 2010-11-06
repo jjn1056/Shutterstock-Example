@@ -21,15 +21,7 @@ requires 'UUID::Tiny' => '1.03';
 requires 'HTML::FillInForm::Lite' => '1.09';
 requires 'Test::mysqld' => '0.11'; ## Need for non-interactive install Test::DBIC
 requires 'Test::DBIx::Class' => '0.16'; ## Non test dep for now
-
-if(
-    ($ENV{PERL_MM_OPT} and 
-    ($ENV{MODULEBUILDRC} or $ENV{PERL_MB_OPT}))
-) {
-
-    ## If there's an active local::lib, require extra deps
-    requires 'local::lib' => '1.006007';
-}
+requires 'App::local::lib::helper' => '0.03'; 
 
 test_requires 'Test::Most' => '0.23';
 test_requires 'HTTP::Request::Common';
