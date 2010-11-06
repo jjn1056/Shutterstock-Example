@@ -47,14 +47,11 @@ sub as_html {
     my @body = process_templates([$template, \&layout], %data);
 
     ## TODO this could be better somewhere else
-    ## TODO handle multiple forms
+    ## TODO handle multiple forms, may should response filter?
 
     if(my $form = delete $data{form}) {
         my $h = HTML::FillInForm::Lite->new();
         @body = $h->fill(\@body, $form->fif );
-
-        use Data::Dump 'dump';
-        warn dump @body;
     }
 
     return [
@@ -129,6 +126,8 @@ sub show_user_form {
         roles_errors => $form->field('roles')->errors,
     ));
 }
+
+    ## TODO This error display stuff could probably be extracted
 
     sub user_form {
         my (%data) = @_;
