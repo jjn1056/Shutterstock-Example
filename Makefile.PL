@@ -18,6 +18,7 @@ requires 'DateTime' => '0.65';
 requires 'HTML::FormHandler' => '0.32005';
 requires 'HTML::FormHandler::Model::DBIC' => '0.14';
 requires 'UUID::Tiny' => '1.03';
+requires 'HTML::FillInForm::Lite' => '1.09';
 
 test_requires 'Test::DBIx::Class' => '0.16';
 test_requires 'Test::Most' => '0.23';

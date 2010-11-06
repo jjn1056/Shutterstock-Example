@@ -4,6 +4,7 @@ use Web::Simple __PACKAGE__;
 use Shutterstock::Example::Web::DB qw(WebSchema);
 use Shutterstock::Example::Web::User;
 use Shutterstock::Example;
+use HTML::FillInForm::Lite;
 use UUID::Tiny ':std';
 use HTML::Tags;
 
@@ -14,31 +15,48 @@ dispatch {
     sub (/) {
         $self->show_landing();
     },
-    sub (GET + /user) {
+    subdispatch sub (/...) {
         my($self, $env) = @_[0, +PSGI_ENV];
-        $self->show_users(WebSchema($env)->resultset('User'));
-    },
-    subdispatch sub (/user/*) {
-        my($self, $id, $env) = @_[0, 2, +PSGI_ENV];
-        my $item = WebSchema($env)->resultset('User')->find_or_new({user_id=>$id});
-        my $form = Shutterstock::Example::Web::User->new(item=>$item);
+        my $user_rs = WebSchema($env)->resultset('User');
         [
-            sub (GET) {
-                $self->show_user_form($form);
+            sub (GET + /user) {
+                $self->show_users($user_rs);
             },
-            sub (POST + %:email=&:@roles~) {
-                my ($self, $env1, $env2, $params) = @_;
-                $form->process(params => $params) ?
-                  $self->show_you_create_a_user :
-                  $self->show_user_form($form);
+            subdispatch sub (/user/*) {
+                my ($self, $env1, $env2, $env3, $id) = @_;
+                my $item = $user_rs->find_or_new({user_id=>$id});
+                my $form = Shutterstock::Example::Web::User->new(item=>$item);
+                [
+                    sub (GET) {
+                        $self->show_user_form($form);
+                    },
+                    sub (POST + %:email=&:@roles~) {
+                        my ($self, $env1, $env2, $env3, $env4, $params) = @_;
+                        $form->process(params => $params) ?
+                          $self->show_you_create_a_user :
+                          $self->show_user_form($form);
+                    },
+                ],
             },
-        ]
-    }
+        ],
+    },
 };
 
 sub as_html {
     my ($template, %data) = @_;
     my @body = process_templates([$template, \&layout], %data);
+
+    ## TODO this could be better somewhere else
+    ## TODO handle multiple forms
+
+    if(my $form = delete $data{form}) {
+        my $h = HTML::FillInForm::Lite->new();
+        @body = $h->fill(\@body, $form->fif );
+
+        use Data::Dump 'dump';
+        warn dump @body;
+    }
+
     return [
         200,
         ['Content-Type' => 'text/html' ],
@@ -67,7 +85,6 @@ sub as_html {
     }
 
 sub show_landing {
-    my ($self, $user_rs) = @_;
     as_html(\&landing, (
         title => "Welcome to the Demo Home",
         site_version => $Shutterstock::Example::VERSION,
@@ -77,12 +94,11 @@ sub show_landing {
 
     sub landing {
         my (%data) = @_;
-        my $uuid = $data{uuid};
         <p>, "Hi, I'm version: ", $data{site_version}, </p>,
         <p>, "Here's some interesting things about me", </p>,
         <ul>,
             <li>, <a href="/user">, "My Users", </li>,
-            <li>, <a href="/user/$uuid">, "Create New User", </li>,
+            <li>, <a href="/user/$data{uuid}">, "Create New User", </li>,
         </ul>;
     }
 
@@ -108,34 +124,30 @@ sub show_user_form {
     as_html(\&user_form, (
         title => "Create a User",
         form => $form,
+        roles => [$form->field('roles')->options],
+        email_errors => $form->field('email')->errors,
+        roles_errors => $form->field('roles')->errors,
     ));
 }
 
     sub user_form {
         my (%data) = @_;
-
-        ## TODO fix this mess
-        my $email = $data{form}->field('email')->value || '';
-        my @roles = $data{form}->field('roles')->options;
-        my @email_errors = @{$data{form}->field('email')->errors};
-        my $role_id = $data{form}->field('roles')->value;
-        my @role_ids = ref $role_id ? @$role_id : $role_id;
-        ## TODO End of mess
-
         <form id="user-form" method="post">,
           <fieldset>,
             <div>,
               <label class="form-label" for="email">, "Email: ", </label>,
-              <input type="text" name="email" id="email" value="$email" />,
+              <input type="text" name="email" id="email" value="" />,
               map({
               <span class="error_message">, " $_", </span>
-              } @email_errors), 
+              } @{$data{email_errors}}), 
             </div>,
             map({
               my ($value, $label) = @{$_}{qw/value label/};
-              my $checked = grep({ $_ eq $value } @role_ids) ? "checked" : "";
-              <input type="checkbox" name="roles" value="$value" $checked />, $label, <br/>
-            } @roles),
+              <input type="checkbox" name="roles" value="$value"  />, $label, <br/>
+            } @{$data{roles}}),
+            map({
+              <span class="error_message">, " $_", </span>
+            } @{$data{roles_errors}}), 
             <div>,
               <input type="submit" name="submit" id="submit" value="Save" />,
             </div>,
