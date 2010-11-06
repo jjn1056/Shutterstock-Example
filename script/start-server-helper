@@ -24,10 +24,10 @@ if(
         split ' ', $ENV{PERL_MM_OPT};
 
     my $lib = File::Spec->catdir($target, 'lib', 'perl5');
-    my $bin = File::Spec->catdir($target, 'bin', 'start-shutterstock-example');
+    my $bin = File::Spec->catdir($target, 'bin');
 
-    open(my $bin_fh, '>', $bin)
-      or die("Can't open $bin", $!);
+    open(my $bin_fh, '>', File::Spec->catfile($bin, 'start-shutterstock-example'))
+      or die("Can't open $bin, start-shutterstock-example", $!);
 
     print $bin_fh <<"SCRIPT_CONTENT";
 #!$which_perl
@@ -50,10 +50,10 @@ use Plack::Runner;
 ## script area.
 
 my \$psgi = 'shutterstock-example-web.psgi';
-if(-e File::Spec->catdir('$bin', \$psgi)) {
-    \$psgi = File::Spec->catdir('$bin', \$psgi);
-} elsif(-e File::Spec->catdir(cwd(), 'script', \$psgi)) {
-    \$psgi = File::Spec->catdir(cwd(), 'script', \$psgi);
+if(-e File::Spec->catfile('$bin', \$psgi)) {
+    \$psgi = File::Spec->catfile('$bin', \$psgi);
+} elsif(-e File::Spec->catfile(cwd(), 'script', \$psgi)) {
+    \$psgi = File::Spec->catfile(cwd(), 'script', \$psgi);
 } else {
     die "Can't find your PSGI app file";
 }
