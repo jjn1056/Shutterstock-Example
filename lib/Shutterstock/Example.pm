@@ -1,7 +1,7 @@
 package Shutterstock::Example;
  
 use 5.008008;
-our $VERSION = '0.14';
+our $VERSION = '0.15';
  
 =head1 NAME
 
@@ -27,20 +27,49 @@ code changes, run tests, try out new dependencies and resolve merge conflicts
 with other developers.  Suggested method is for a developer to install a user
 level Perl with L<App::perlbrew>, bootstrap a developer kit (for now the easy
 way to do this is via L<Task::BeLike::JJNAPIORK>), clone the git repository and
-then install dependencies.  Checklist follows:
+then install dependencies.
 
-=head3 install L<App::perlbrew>
+=head3 install App::perlbrew
+
+Although you can develop with whatever Perl is currently installed, current
+best practices indicate that it would be best to develop applications againt
+a Perl installation that is dedicated to this purpose.  Try to think of the
+system Perl as a sort of runtime for installed applications while your 
+developer Perl is similar to an SDK.
+
+L<App::perlbrew> is a tool for making it easy to create user level Perl
+installations.  It helps you to avoid permissions issues related to development
+since all you need is permissions to your own $HOME directory.  Additionally
+it promotes the ability for developers to work independently and it detaches
+development from the global system Perl so that OS level needs won't interfere
+with developer needs.
 
 Just follow the basic instructions to setup a user level Perl executable from
-the L<App::perlbrew> documentation.
+the L<App::perlbrew/INSTALLATION> documentation, but here's a summary
+
+From a terminal open to your $HOME directory:
+
+    curl -LO http://xrl.us/perlbrew
+    chmod +x perlbrew
+    ./perlbrew install
+
+It might take a while to download and compile the version of Perl you select.
 
 =head3 bootstrap SDK and L<local::lib>
 
-The first command bootstraps the SDK for Modern Perl development, the second
-enables your L<local::lib> in C<$HOME/extlib> so that you can use it.
+Once you are running your locally installed 'SDK' Perl, you need to bootstrap
+it with a handful of CPAN modules required for general development.  Since Perl
+is decentralized there is no official SDK, but many developers create bundles
+under the "Task::BeLike::*" namespace.  Some of these are pretty big and will
+take a long time.  My L<Task::BeLike::JJNAPIORK> is a very minimal SDK and 
+contains just a handlful of modules.  For the purposes of this demo, I'll ask
+you to bootstrap your SDK Perl with L<Task::BeLike::JJNAPIORK>.
 
-    curl -L http://cpanmin.us/ | perl - -l $HOME/extlib Task::BeLike::JJNAPIORK
-    $HOME/extlib/bin/localenv bash
+    curl -L http://cpanmin.us/ | perl - -l $HOME/mylocal Task::BeLike::JJNAPIORK
+    $HOME/mylocal/bin/localenv bash
+ 
+The first command bootstraps the SDK for Modern Perl development, the second 
+enables your L<local::lib> in C<$HOME/mylocal> so that you can use it.
 
 See the documentation for L<App::local::lib::helper> on the C<localenv> and the
 C<localenv-bashrc> scripts.
