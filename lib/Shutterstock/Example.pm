@@ -1,7 +1,7 @@
 package Shutterstock::Example;
  
 use 5.008008;
-our $VERSION = '0.13';
+our $VERSION = '0.14';
  
 =head1 NAME
 
@@ -73,13 +73,20 @@ to all target servers and HUP application servers.  Checklist follows:
 
 =head3 create tarball
 
+Execute the following commands from the application home directory (that which
+contains the Makefile.PL).
+
     perl Makefile.PL
     make test
     make dist
 
 =head3 create new installation from tarball
 
-    cpanm -l $HOME/local-v0.XXX Shutterstock-Example-0.XXX.tar.gz 
+    cpanm -l $HOME/local-v0.XXX Shutterstock-Example-0.XXX.tar.gz
+
+=head3 test installation (start server)
+
+    $HOME/local-v0.XXX/bin/start-shutterstock-example 
 
 =head3 sync across target servers
 
