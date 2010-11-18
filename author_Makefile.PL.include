@@ -1,8 +1,6 @@
 
-use strict;
-use warnings;
-
 ## --------------------------------------------------------------------------##
+## This is an include file for Makefile.PL and not intended to be executed.  ##
 ## This stuff is used by CPAN authors and developers who need to build this  ##
 ## code, create tarballs, run extended author tests, etc.  It also has some  ##
 ## features for helping to manage dependencies, although if you are using a  ##
