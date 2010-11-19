@@ -17,24 +17,24 @@ dispatch {
         my $user_rs = WebSchema($_[+PSGI_ENV])
           ->resultset('User');
         
-            sub (GET + /user) {
-                $self->show_users($user_rs);
+        sub (GET + /user) {
+            $self->show_users($user_rs);
+        },
+        sub (/user/*) {
+            my ($self, $id) = @_;
+            my $item = $user_rs->find_or_new({user_id=>$id});
+            my $form = Shutterstock::Example::Web::User->new(item=>$item);
+
+            sub (GET) {
+                $self->show_user_form($form);
             },
-            sub (/user/*) {
-                my ($self, $id) = @_;
-                my $item = $user_rs->find_or_new({user_id=>$id});
-                my $form = Shutterstock::Example::Web::User->new(item=>$item);
-                    sub (GET) {
-                        $self->show_user_form($form);
-                    },
-                    sub (POST + %:email=&:@roles~) {
-                        my ($self, $params) = @_;
-                        $form->process(params => $params) ?
-                          $self->show_you_create_a_user :
-                          $self->show_user_form($form);
-                    },
+            sub (POST + %:email=&:@roles~) {
+                my ($self, $params) = @_;
+                $form->process(params => $params) ?
+                  $self->show_you_create_a_user :
+                  $self->show_user_form($form);
             },
-        
+        }, 
     },
 };
 
