@@ -13,18 +13,17 @@ dispatch {
     sub (/) {
         $self->show_landing();
     },
-    subdispatch sub (/...) {
+    sub (/...) {
         my $user_rs = WebSchema($_[+PSGI_ENV])
           ->resultset('User');
-        [
+        
             sub (GET + /user) {
                 $self->show_users($user_rs);
             },
-            subdispatch sub (/user/*) {
+            sub (/user/*) {
                 my ($self, $id) = @_;
                 my $item = $user_rs->find_or_new({user_id=>$id});
                 my $form = Shutterstock::Example::Web::User->new(item=>$item);
-                [
                     sub (GET) {
                         $self->show_user_form($form);
                     },
@@ -34,9 +33,8 @@ dispatch {
                           $self->show_you_create_a_user :
                           $self->show_user_form($form);
                     },
-                ],
             },
-        ],
+        
     },
 };
 
