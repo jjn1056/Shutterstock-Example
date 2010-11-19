@@ -28,7 +28,7 @@ test_requires 'HTTP::Request::Common';
 
 all_from 'lib/Shutterstock/Example.pm';
 install_script glob('script/*.psgi');
-require 'author_Makefile.PL.include'
+require 'maint/Makefile.PL.include'
   if $Module::Install::AUTHOR;
 
 my $start_server_helper = 
