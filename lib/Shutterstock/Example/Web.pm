@@ -4,11 +4,9 @@ use Web::Simple __PACKAGE__;
 use Shutterstock::Example::Web::DB qw(WebSchema);
 use Shutterstock::Example::Web::User;
 use Shutterstock::Example;
-use HTML::FillInForm::Lite;
 use UUID::Tiny ':std';
 use HTML::Tags;
 
-## TODO Why multiply $env (psgi) hashrefs?
 ## TODO Get rid of the evil, evil passing $env to WebSchema
 
 dispatch {
@@ -16,14 +14,14 @@ dispatch {
         $self->show_landing();
     },
     subdispatch sub (/...) {
-        my($self, $env) = @_[0, +PSGI_ENV];
-        my $user_rs = WebSchema($env)->resultset('User');
+        my $user_rs = WebSchema($_[+PSGI_ENV])
+          ->resultset('User');
         [
             sub (GET + /user) {
                 $self->show_users($user_rs);
             },
             subdispatch sub (/user/*) {
-                my ($self, $env1, $env2, $env3, $id) = @_;
+                my ($self, $id) = @_;
                 my $item = $user_rs->find_or_new({user_id=>$id});
                 my $form = Shutterstock::Example::Web::User->new(item=>$item);
                 [
@@ -31,7 +29,7 @@ dispatch {
                         $self->show_user_form($form);
                     },
                     sub (POST + %:email=&:@roles~) {
-                        my ($self, $env1, $env2, $env3, $env4, $params) = @_;
+                        my ($self, $params) = @_;
                         $form->process(params => $params) ?
                           $self->show_you_create_a_user :
                           $self->show_user_form($form);
@@ -45,15 +43,6 @@ dispatch {
 sub as_html {
     my ($template, %data) = @_;
     my @body = process_templates([$template, \&layout], %data);
-
-    ## TODO this could be better somewhere else
-    ## TODO handle multiple forms, may should response filter?
-
-    if(my $form = delete $data{form}) {
-        my $h = HTML::FillInForm::Lite->new();
-        @body = $h->fill(\@body, $form->fif );
-    }
-
     return [
         200,
         ['Content-Type' => 'text/html' ],
@@ -120,8 +109,12 @@ sub show_user_form {
     my ($self, $form) = @_;
     as_html(\&user_form, (
         title => "Create a User",
-        form => $form,
         roles => [$form->field('roles')->options],
+        email => $form->field('email')->fif,
+        role => do {
+            my $roles = $form->field('roles')->fif || '';
+            ref $roles ? $roles : [$roles];
+        },
         email_errors => $form->field('email')->errors,
         roles_errors => $form->field('roles')->errors,
     ));
@@ -136,14 +129,15 @@ sub show_user_form {
           <fieldset>,
             <div>,
               <label class="form-label" for="email">, "Email: ", </label>,
-              <input type="text" name="email" id="email" value="" />,
+              <input type="text" name="email" id="email" value="$data{email}" />,
               map({
               <span class="error_message">, " $_", </span>
               } @{$data{email_errors}}), 
             </div>,
             map({
               my ($value, $label) = @{$_}{qw/value label/};
-              <input type="checkbox" name="roles" value="$value"  />, $label, <br/>
+              my $checked = grep({ $_ eq $value } @{$data{role}} ) ? "checked" : "";
+              <input type="checkbox" name="roles" value="$value" $checked />, $label, <br/>
             } @{$data{roles}}),
             map({
               <span class="error_message">, " $_", </span>
