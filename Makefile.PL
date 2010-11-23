@@ -20,7 +20,7 @@ requires 'HTML::FormHandler::Model::DBIC' => '0.14';
 requires 'UUID::Tiny' => '1.03';
 requires 'Test::mysqld' => '0.11'; ## Need for non-interactive install Test::DBIC
 requires 'Test::DBIx::Class' => '0.17'; ## Non test dep for now
-requires 'App::local::lib::helper' => '0.03'; 
+requires 'Hash::MultiValue';
 
 test_requires 'Test::Most' => '0.23';
 test_requires 'HTTP::Request::Common';
@@ -30,14 +30,14 @@ install_script glob('script/*.psgi');
 require 'maint/Makefile.PL.include'
   if $Module::Install::AUTHOR;
 
-my $start_server_helper = 
-  File::Spec->catdir('script','start-server-helper');
+my $plackup_helper = 
+  File::Spec->catdir('script','plackup-helper');
 
 postamble <<"EOP";
-install :: start_server_helper
+install :: plackup_helper
 
-start_server_helper :
-\t\$(PERL) $start_server_helper @ARGV
+plackup_helper :
+\t\$(PERL) $plackup_helper @ARGV
 EOP
 
 WriteAll;

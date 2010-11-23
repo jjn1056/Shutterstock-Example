@@ -1,0 +1,191 @@
+#!/usr/bin/env perl
+
+{
+    package App::plackup::helper;
+
+    use strict;
+    use warnings FATAL => 'all';
+
+    use Config;
+    use File::Spec;
+    use Getopt::Long;
+
+    sub new {
+        my ($class, @args) = @_;
+        my %args = (
+            which_perl => $ENV{PLACKUP_HELPER_WHICH_PERL} || $Config{perlpath},
+            helper_permissions => $ENV{PLACKUP_HELPER_PERMISSIONS} || '0755',
+            psgi_script => $ENV{PLACKUP_HELPER_PSGI_SCRIPT} || '',
+            get_local_lib_basedir => $class->has_local_lib ? $class->get_local_lib_basedir : '',
+            helper_name => 'THIS MUST BE DONE!!',
+            psgi_app => 'THIS MUST BE DONE!!',
+        );
+
+        return bless \%args, $class;
+    }
+
+    sub has_local_lib {
+        if( $ENV{PERL_MM_OPT} and 
+            ($ENV{MODULEBUILDRC} or $ENV{PERL_MB_OPT})
+        ) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    sub get_local_lib_basedir {
+        my ($install_base, $target) =
+          map {split '=', $_} 
+          grep { m/^INSTALL_BASE/ }
+          split ' ', $ENV{PERL_MM_OPT};
+
+        return $target;
+    }
+
+    sub create_helper {
+        my $self = shift;
+        my ($target, $psgi_app) = @{$self->{qw/$target, psgi_app/}};
+        my $lib = File::Spec->catdir($self->{target}, 'lib', 'perl5');
+        my $bin = File::Spec->catdir($self->{target}, 'bin');
+        my $script = File::Spec->catfile($bin, $helper_name);
+
+        open(my $bin_fh, '>', $script)
+          or die("Can't open $script", $!);
+
+        print $bin_fh <<"SCRIPT_CONTENT";
+#!$which_perl
+
+BEGIN {
+    use strict;
+    use warnings;
+    use Cwd 'cwd';
+    use File::Spec;
+    use lib File::Spec->catdir(cwd(), 'lib');
+    use lib '$lib';
+    eval "use local::lib '$target'";
+    die "local::lib does not seem to be installed: $@"
+      if($@);
+}
+
+use Plack::Runner;
+
+my \$psgi = 'shutterstock-example-web.psgi';
+if(-e File::Spec->catfile('$bin', \$psgi)) {
+    \$psgi = File::Spec->catfile('$bin', \$psgi);
+} elsif(-e File::Spec->catfile(cwd(), 'script', \$psgi)) {
+    \$psgi = File::Spec->catfile(cwd(), 'script', \$psgi);
+} elsif(-e File::Spec->catfile(cwd(), \$psgi)) {
+    \$psgi = File::Spec->catfile(cwd(), \$psgi);
+} else {
+    die "Can't find your PSGI app file";
+}
+
+my \$runner = Plack::Runner->new();
+\$runner->parse_options(\@ARGV, \$psgi);
+\$runner->run();
+
+SCRIPT_CONTENT
+
+        close($bin_fh);
+        chmod oct($self->{helper_permissions}), $script;
+
+    }
+}
+
+my $app_helper = App::plackup::helper->new;
+$app_helper->parse_options;
+$app_helper->create_helper;
+
+
+__END__
+
+
+
+if(
+    ($ENV{PERL_MM_OPT} and 
+    ($ENV{MODULEBUILDRC} or $ENV{PERL_MB_OPT}))
+) {
+    my ($psgi_app_namespace, $helper_name);
+    my $which_perl = $ENV{START_SERVER_WHICH_PERL} || $Config{perlpath};
+    my $helper_permissions = $ENV{START_SERVER_PERMISSIONS} || '0755';
+    my ($install_base, $target) =
+        map {split '=', $_} 
+        grep { m/^INSTALL_BASE/ }
+        split ' ', $ENV{PERL_MM_OPT};
+
+    my $result = Getopt::Long::GetOptions(
+        'h|help' => \$help,
+        'm|namespace=s' => \$psgi_app_namespace,
+        'p|which_perl=s' => \$which_perl,
+        't|target=s' => \$target,
+        'n|helper_name=s' => \$helper_name,
+        'p|helper_permissions=s' => \$helper_permissions,
+    );
+
+    unless($helper_name) {
+        my ($helper_name) = map {
+            $_=~s/::/\-/g; $_;
+         } (lc $psgi_app_namespace);
+        $helper_name = 'plackup-'. $helper_name;
+    }
+
+   if($help || !$result) {
+        print <<'END';
+Usage: perl Makefile.PL %OPTIONS
+
+Options:
+  -h,--help                 This help message
+  -p,--which_perl           The Perl binary we are building the helper for (default: $^X)
+  -t,--target               The local::lib we are building the helper for (default is current)
+  -n,--helper_name          Name of the helper script
+  -p,--helper_permissions   Permissions given to the helper script (default 775)
+
+END
+
+    die $helper_name;
+
+    my $lib = File::Spec->catdir($target, 'lib', 'perl5');
+    my $bin = File::Spec->catdir($target, 'bin');
+    my $script = File::Spec->catfile($bin, $helper_name);
+
+    open(my $bin_fh, '>', $script)
+      or die("Can't open $script", $!);
+
+    print $bin_fh <<"SCRIPT_CONTENT";
+#!$which_perl
+
+BEGIN {
+    use strict;
+    use warnings;
+    use Cwd 'cwd';
+    use File::Spec;
+    use lib File::Spec->catdir(cwd(), 'lib');
+    use lib '$lib';
+    eval "use local::lib '$target'";
+    die "local::lib does not seem to be installed: $@"
+      if($@);
+}
+
+use Plack::Runner;
+use $psgi_app_namespace;
+
+my \$runner = Plack::Runner->new();
+\$runner->parse_options(\@ARGV, '--app'=> ${psgi_app_namespace}->as_psgi_app);
+\$runner->run();
+
+SCRIPT_CONTENT
+
+    close($bin_fh);
+    chmod oct($helper_permissions), $script;
+} else {
+    print <<"MESSAGE";
+
+    Notice: starter  won't be installed since no local::lib is installed or
+    is active.  This means you are installing the distribution into the global
+    Perl lib and you don't need any help.  This is probably not the recommended
+    installation method, but I guess you know what you are doing.
+
+MESSAGE
+}
+

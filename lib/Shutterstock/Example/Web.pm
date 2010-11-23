@@ -5,12 +5,13 @@ use Shutterstock::Example::Web::DB qw(WebSchema);
 use Shutterstock::Example::Web::User;
 use Shutterstock::Example;
 use UUID::Tiny ':std';
+use Hash::MultiValue;
 use HTML::Tags;
 
 ## TODO Get rid of the evil, evil passing $env to WebSchema
 
 dispatch {
-    sub (/) {
+    sub (GET + /) {
         $self->show_landing();
     },
     sub (/...) {
@@ -20,7 +21,7 @@ dispatch {
         sub (GET + /user) {
             $self->show_users($user_rs);
         },
-        sub (/user/*) {
+        sub (GET|POST + /user/*) {
             my ($self, $id) = @_;
             my $item = $user_rs->find_or_new({user_id=>$id});
             my $form = Shutterstock::Example::Web::User->new(item=>$item);
@@ -62,9 +63,12 @@ sub as_html {
         \'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ',
         \'"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
         <html>,
-          <title>, ($data{title} || 'Hello World'), </title>,
-            <body>, @{$data{content}},
-            </body>,
+          <head>,
+            <title>, ($data{title} || 'Hello World'), </title>,
+          </head>,
+          <body>,
+            @{$data{content}},
+          </body>,
         </html>;
     }
 
@@ -105,21 +109,16 @@ sub show_users {
 
 sub show_user_form {
     my ($self, $form) = @_;
+    my $fif = Hash::MultiValue->from_mixed($form->fif);
     as_html(\&user_form, (
         title => "Create a User",
-        roles => [$form->field('roles')->options],
-        email => $form->field('email')->fif,
-        role => do {
-            my $roles = $form->field('roles')->fif || '';
-            ref $roles ? $roles : [$roles];
-        },
+        options => [$form->field('roles')->options],
+        email => $fif->get('email'),
+        roles => [$fif->get_all('roles')],
         email_errors => $form->field('email')->errors,
         roles_errors => $form->field('roles')->errors,
     ));
 }
-
-    ## TODO This error display stuff could probably be extracted into
-    ## a common component.
 
     sub user_form {
         my (%data) = @_;
@@ -134,9 +133,9 @@ sub show_user_form {
             </div>,
             map({
               my ($value, $label) = @{$_}{qw/value label/};
-              my $checked = grep({ $_ eq $value } @{$data{role}} ) ? "checked" : "";
+              my $checked = grep({ $_ eq $value } @{$data{roles}} ) ? "checked" : "";
               <input type="checkbox" name="roles" value="$value" $checked />, $label, <br/>
-            } @{$data{roles}}),
+            } @{$data{options}}),
             map({
               <span class="error_message">, " $_", </span>
             } @{$data{roles_errors}}), 
