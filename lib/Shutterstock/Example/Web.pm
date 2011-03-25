@@ -5,7 +5,6 @@ use Shutterstock::Example::Web::DB qw(WebSchema);
 use Shutterstock::Example::Web::User;
 use Shutterstock::Example;
 use UUID::Tiny ':std';
-use Hash::MultiValue;
 use HTML::Tags;
 
 ## TODO Get rid of the evil, evil passing $env to WebSchema
@@ -110,42 +109,18 @@ sub show_users {
 
 sub show_user_form {
     my ($self, $form) = @_;
-    my $fif = Hash::MultiValue->from_mixed($form->fif);
     as_html(\&user_form, (
         title => "Create a User",
-        options => [$form->field('roles')->options],
-        email => $fif->get('email'),
-        roles => [$fif->get_all('roles')],
-        email_errors => $form->field('email')->errors,
-        roles_errors => $form->field('roles')->errors,
+        form => $form,
     ));
 }
 
     sub user_form {
         my (%data) = @_;
-        <form id="user-form" method="post">,
-          <fieldset>,
-            <div>,
-              <label class="form-label" for="email">, "Email: ", </label>,
-              <input type="text" name="email" id="email" value="$data{email}" />,
-              map({
-              <span class="error_message">, " $_", </span>
-              } @{$data{email_errors}}), 
-            </div>,
-            map({
-              my ($value, $label) = @{$_}{qw/value label/};
-              my $checked = grep({ $_ eq $value } @{$data{roles}} ) ? "checked" : "";
-              <input type="checkbox" name="roles" value="$value" $checked />, $label, <br/>
-            } @{$data{options}}),
-            map({
-              <span class="error_message">, " $_", </span>
-            } @{$data{roles_errors}}), 
-            <div>,
-              <input type="submit" name="submit" id="submit" value="Save" />,
-            </div>,
-          </fieldset>,
-        </form>;
+        my $form = $data{form}->render;
+        return <div>, \$form, </div>;
     }
+
 
 sub show_you_create_a_user {
     as_html(\&you_created_a_user, title => "Congrats!");

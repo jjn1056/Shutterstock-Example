@@ -5,6 +5,7 @@ with 'HTML::FormHandler::TraitFor::DBICFields';
 
 has '+exclude' => (default => sub {+['created','user_id']});
 has_field 'roles' => (type => 'Multiple', label_column => 'title', required => 1);
+has_field 'submit' => (type => 'Submit');
 
 __PACKAGE__->meta->make_immutable;
 
