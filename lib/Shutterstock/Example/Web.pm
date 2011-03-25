@@ -10,7 +10,8 @@ use HTML::Tags;
 
 ## TODO Get rid of the evil, evil passing $env to WebSchema
 
-dispatch {
+sub dispatch_request {
+    my $self = shift;
     sub (GET + /) {
         $self->show_landing();
     },
@@ -37,7 +38,7 @@ dispatch {
             },
         }, 
     },
-};
+}
 
 sub as_html {
     my ($template, %data) = @_;

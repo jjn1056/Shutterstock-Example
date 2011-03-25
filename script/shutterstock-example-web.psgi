@@ -11,7 +11,7 @@ builder {
     enable 'Debug::DBIC::QueryLog';
 
     ## return application
-    Shutterstock::Example::Web->as_psgi_app;
+    Shutterstock::Example::Web->to_psgi_app;
 
 };
 
