@@ -50,7 +50,7 @@ From a terminal open to your $HOME directory:
 
 It might take a while to download and compile the version of Perl you select.
 
-### bootstrap SDK and L<local::lib>
+### bootstrap SDK and [local::lib](http://search.cpan.org/perldoc?local::lib)
 
 Once you are running your locally installed 'SDK' Perl, you need to bootstrap
 it with a handful of CPAN modules required for general development.  Since Perl

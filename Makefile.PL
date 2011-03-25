@@ -4,22 +4,22 @@ use strict;
 use warnings;
 use inc::Module::Install;
 
-requires 'Plack' => '0.9951';
-requires 'Plack::Middleware::Debug' => '0.10';
-requires 'Web::Simple' => '0.004';
-requires 'parent' => '0.223';
-requires 'DBIx::Class' => '0.08124';
-requires 'DBIx::Class::Helpers' => '2.005000';
+requires 'Plack' => '0.9974';
+requires 'Plack::Middleware::Debug' => '0.11';
+requires 'Web::Simple' => '0.008';
+requires 'parent' => '0.225';
+requires 'DBIx::Class' => '0.08127';
+requires 'DBIx::Class::Helpers' => '2.007000';
 requires 'DBIx::Class::DynamicDefault' => '0.03';
 requires 'DBIx::Class::TimeStamp' => '0.14';
 requires 'DBIx::Class::QueryLog' => '1.3.0';
-requires 'Plack::Middleware::Debug::DBIC::QueryLog' => '0.03';
-requires 'DateTime' => '0.65';
-requires 'HTML::FormHandler' => '0.32005';
+requires 'Plack::Middleware::Debug::DBIC::QueryLog' => '0.06';
+requires 'DateTime' => '0.66';
+requires 'HTML::FormHandler' => '0.33002';
 requires 'HTML::FormHandler::Model::DBIC' => '0.14';
 requires 'UUID::Tiny' => '1.03';
-requires 'Test::mysqld' => '0.11'; ## Need for non-interactive install Test::DBIC
-requires 'Test::DBIx::Class' => '0.17'; ## Non test dep for now
+requires 'Test::mysqld' => '0.12'; ## Need for non-interactive install Test::DBIC
+requires 'Test::DBIx::Class' => '0.19'; ## Non test dep for now
 requires 'Hash::MultiValue';
 
 test_requires 'Test::Most' => '0.23';
